@@ -31,15 +31,15 @@ class CiasneBlizniakiGame:
 
     def game(self):
         twin_list = []
-        letter = self.strategy.choose_letter()
+        letter = self.strategy.choose_letter(twin_list) #
         twin_list.append(letter)
         for i in range(self.n - 1):
             print("\nWybrana pozycja: ", end='')
-            pos = self.strategy.choose_place()
+            pos = self.strategy.choose_place(twin_list) #
             twin_list.insert(pos, " ")
             print(twin_list)
             print("Wybrana litera: ", end='')
-            letter = self.strategy.choose_letter()
+            letter = self.strategy.choose_letter(twin_list) #
             twin_list[pos] = letter
             print(letter)
             is_twin = self.search_for_twins(twin_list, pos)
