@@ -2,7 +2,7 @@ from CiasneBlizniaki import CiasneBlizniakiGame
 
 
 def main():
-    gra = CiasneBlizniakiGame()
+    gra = CiasneBlizniakiGame('demo')
     gra.play()
 
 
