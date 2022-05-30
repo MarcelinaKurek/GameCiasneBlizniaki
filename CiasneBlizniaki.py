@@ -2,7 +2,7 @@ import copy
 import Strategy
 from collections import Counter
 from BNode import BNode
-import time
+from Statistics import Statistics
 import treelib
 
 
@@ -18,28 +18,30 @@ class CiasneBlizniakiGame:
         self.verbose = True
         self.mode = ""
         self.num_of_games = 1
+        self.statistics = Statistics()
 
     def play(self):
         if self.first_game:
             self.choose_parameters()
             self.first_game = False
         for i in range(self.num_of_games):
+            self.strategy.places = 1
             self.game()
-            self.ask('y', 'n')
+        print(self.statistics)
         self.ask()
 
 
     def choose_parameters(self):
-        tryb = int(input("Wybierz tryb gry: 1-demo, 2-gra"))
+        tryb = int(input("Wybierz tryb gry (1-demo, 2-gra): "))
         n = int(input("Podaj liczbę elementów w alfabecie: "))
-        self.alphabet = list(map(str, input("\nPodaj alfabet: ").strip().split()))[:n]
+        self.alphabet = list(map(str, input("Podaj alfabet: ").strip().split()))[:n]
         self.n = int(input("Podaj maksymalną liczbę ruchów: "))
         self.strategy = Strategy.Strategy(self.alphabet)
         self.strategy.strategy_place = int(input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\nWybierz strategię wyboru miejsc: "))
         self.strategy.strategy_letter = int(input("\n1-losowy wybór liter\n2-wybór liter po kolei\nWybierz strategię wyboru liter: "))
         if tryb == 1:
             self.mode = 'demo'
-        if tryb ==2:
+        if tryb == 2:
             self.mode = 'gra'
             self.verbose = False
         if self.mode != 'demo':
@@ -49,6 +51,7 @@ class CiasneBlizniakiGame:
         twin_list = []
         letter = self.strategy.choose_letter(twin_list)
         twin_list.append(letter)
+        moves = 1
         for i in range(self.n - 1):
             if self.verbose:
                 print("\nWybrana pozycja: ", end='')
@@ -62,28 +65,30 @@ class CiasneBlizniakiGame:
             if self.verbose:
                 print(letter)
             is_twin = self.search_for_twins(twin_list, pos)
+            moves = moves+1
             if is_twin:
+                self.statistics.update(True, moves)
                 if self.verbose:
                     print("Ułożono ciasne bliźniaki", self.twin)
                 return
         if self.verbose:
             print("Nie ułożono ciasnych bliźniaków")
+        self.statistics.update(False, moves)
         return
 
     def ask(self, ans='', ans2=''):
-        if ans != '':
+        if ans =='':
             print("\nCzy chcesz zagrać ponownie? (y/n)?")
             ans = input()
-        if ans == 'y':
-            if ans2 !='':
-                print("\nCzy chcesz zmienić parametry gry? (y/n)?")
-                ans2 = input()
-            if ans2 == 'y':
-                self.choose_parameters()
-            self.strategy.places = 1
-            self.play()
-        else:
+        if ans == 'n':
             return
+        if ans == 'y' and ans2 != 'n':
+            print("\nCzy chcesz zmienić parametry gry? (y/n)?")
+            ans2 = input()
+        if ans2 == 'y':
+            self.choose_parameters()
+        self.play()
+
 
     def is_simple_twin(self, x, return_twin=False):
         """
