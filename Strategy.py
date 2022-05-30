@@ -11,7 +11,7 @@ class Strategy:
         self.chosen_letters = 0
 
     def choose_place(self, twin_list):
-        gra = CiasneBlizniaki.CiasneBlizniakiGame('demo')
+        gra = CiasneBlizniaki.CiasneBlizniakiGame()
         place = 0
         if self.strategy_place == 1: #losowy wybór miejsca z rozkładu jednostajnego
             place = random.randint(0, self.places)
@@ -45,7 +45,7 @@ class Strategy:
 
     def choose_letter(self, twin_list, luka=1):
         pos = 0
-        gra = CiasneBlizniaki.CiasneBlizniakiGame('demo')
+        gra = CiasneBlizniaki.CiasneBlizniakiGame()
         if self.strategy_letter == 1: #losowy wybór litery
             pos = random.randint(0, len(self.alphabet)-1)
         elif self.strategy_letter == 2: #wybór liter po kolei
