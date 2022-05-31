@@ -17,14 +17,17 @@ class Strategy:
         if self.strategy_place == 1: #losowy wybór miejsca z rozkładu jednostajnego
             place = random.randint(0, self.places)
         elif self.strategy_place == 2: #wybór środkowego miejsca
-            place = self.places // 2 +1
+            place = self.places // 2 + 1
         elif self.strategy_place == 3: #wybór zawsze tego samego miejsca
             place = 1
         elif self.strategy_place == 4: #wybór miejsca zmniejszajacego alfabet o 2 litery
-            if twin_list[2] == twin_list[0] or twin_list[2]==twin_list[1]:
-                place = 3
+            if len(twin_list) < 3:
+                place = len(twin_list)
             else:
-                place = 2
+                if twin_list[2] == self.alphabet[0] or twin_list[2] == self.alphabet[1]:
+                    place = 3
+                else:
+                    place = 2
         elif self.strategy_place == 5: #wybieramy losowo spośród miejsc w które można wpisać najmniej liter nie tworząc ciasnego bliźniaka
             twin_list1 = copy.deepcopy(twin_list)
             n = len(twin_list)
@@ -69,12 +72,12 @@ class Strategy:
                 if len(twin_list) !=0:
                     twin_list[luka] = y
                     is_twin = gra.search_for_twins(twin_list, luka)
+                    #print(twin_list, luka, is_twin)
                     if not is_twin:
                         letter = y
                         return letter
                 else:
                     letter = self.alphabet[0]
-
             letter = self.alphabet[0]
         elif self.strategy_letter == 4: #wybór litery losowej spośród tych co można wstawić
             alter_alph = []  # tu wpisujemy litery, które można wstawić

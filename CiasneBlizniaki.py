@@ -22,12 +22,14 @@ class CiasneBlizniakiGame:
 
     def play(self):
         if self.first_game:
+            print("Witamy w grze w unikanie ciasnych bliźniaków!")
             self.choose_parameters()
             self.first_game = False
         for i in range(self.num_of_games):
             self.strategy.places = 1
             self.game()
         print(self.statistics)
+        self.statistics = Statistics()
         self.ask()
 
 
@@ -64,7 +66,7 @@ class CiasneBlizniakiGame:
 
         stratcheck = 0
         while stratcheck == 0:
-            self.strategy.strategy_place = input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\nWybierz strategię wyboru miejsc: ")
+            self.strategy.strategy_place = input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\n3-wybór zawsze tego samego miejsca (drugiego z kolei)\n4-wybór miejsca zmniejszajacego alfabet o 2 litery\n5-wybór losowo spośród miejsc w które można wpisać najmniej liter nie tworząc ciasnego bliźniaka\nWybierz strategię wyboru miejsc: ")
             if self.strategy.strategy_place.isdigit() and int(self.strategy.strategy_place) <= 5:
                 self.strategy.strategy_place = int(self.strategy.strategy_place)
                 stratcheck = 1
@@ -73,7 +75,7 @@ class CiasneBlizniakiGame:
 
         lettercheck = 0
         while lettercheck == 0:
-            self.strategy.strategy_letter = input("\n1-losowy wybór liter\n2-wybór liter po kolei\nWybierz strategię wyboru liter: ")
+            self.strategy.strategy_letter = input("\n1-losowy wybór liter\n2-wybór liter po kolei\n3-wybór litery alfabetycznie z tych co można wstawić (tzn. gdy mogę to zawsze wstawiam A, jeżeli nie to B itd.)\n4-wybór litery losowej spośród tych co można wstawić\nWybierz strategię wyboru liter: ")
             if self.strategy.strategy_letter.isdigit() and int(self.strategy.strategy_letter) <= 4:
                 self.strategy.strategy_letter = int(self.strategy.strategy_letter)
                 lettercheck = 1
@@ -108,20 +110,20 @@ class CiasneBlizniakiGame:
             if self.verbose:
                 print(twin_list)
                 print("Wybrana litera: ", end='')
-            letter = self.strategy.choose_letter(twin_list) #
+            letter = self.strategy.choose_letter(twin_list, pos) #
             twin_list[pos] = letter
             if self.verbose:
                 print(letter)
             is_twin = self.search_for_twins(twin_list, pos)
             moves = moves+1
             if is_twin:
-                self.statistics.update(True, moves)
+                self.statistics.update(True, moves, self.n)
                 if self.verbose:
-                    print("Ułożono ciasne bliźniaki", self.twin)
+                    print("Ułożono ciasne bliźniaki: ", self.twin)
                 return
         if self.verbose:
             print("Nie ułożono ciasnych bliźniaków")
-        self.statistics.update(False, moves)
+        self.statistics.update(False, moves, self.n)
         return
 
     def ask(self, ans='', ans2=''):
