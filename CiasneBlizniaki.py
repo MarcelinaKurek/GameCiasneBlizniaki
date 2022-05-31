@@ -37,8 +37,8 @@ class CiasneBlizniakiGame:
         self.alphabet = list(map(str, input("Podaj alfabet: ").strip().split()))[:n]
         self.n = int(input("Podaj maksymalną liczbę ruchów: "))
         self.strategy = Strategy.Strategy(self.alphabet)
-        self.strategy.strategy_place = int(input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\nWybierz strategię wyboru miejsc: "))
-        self.strategy.strategy_letter = int(input("\n1-losowy wybór liter\n2-wybór liter po kolei\nWybierz strategię wyboru liter: "))
+        self.strategy.strategy_place = int(input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\n3-wybór zawsze tego samego miejsca (drugiego)\n4-\n5-wybieramy losowo spośród miejsc w które można wpisać najmniej liter nie tworząc ciasnego bliźniaka\nWybierz strategię wyboru miejsc: "))
+        self.strategy.strategy_letter = int(input("\n1-losowy wybór liter\n2-wybór liter po kolei\n3-wybór pierwszej z liter bez ułożenia ciasnych bliźniaków\n4-wybór losowej litery bez ułożenia ciasnych bliźniaków\nWybierz strategię wyboru liter: "))
         if tryb == 1:
             self.mode = 'demo'
         if tryb == 2:
@@ -60,7 +60,7 @@ class CiasneBlizniakiGame:
             if self.verbose:
                 print(twin_list)
                 print("Wybrana litera: ", end='')
-            letter = self.strategy.choose_letter(twin_list) #
+            letter = self.strategy.choose_letter(twin_list, pos) #
             twin_list[pos] = letter
             if self.verbose:
                 print(letter)
@@ -98,6 +98,7 @@ class CiasneBlizniakiGame:
         :param return_twin:
         :return:
         """
+
         y = copy.deepcopy(x)
         c = list(map(lambda x: x // 2, list(Counter(y).values())))
         list1 = []
