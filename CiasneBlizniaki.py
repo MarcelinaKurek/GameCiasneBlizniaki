@@ -4,7 +4,7 @@ from collections import Counter
 from BNode import BNode
 from Statistics import Statistics
 import treelib
-
+import math
 
 class CiasneBlizniakiGame:
     """ Gra w ciasne bliźniaki"""
@@ -32,20 +32,68 @@ class CiasneBlizniakiGame:
 
 
     def choose_parameters(self):
-        tryb = int(input("Wybierz tryb gry (1-demo, 2-gra): "))
-        n = int(input("Podaj liczbę elementów w alfabecie: "))
+        trybcheck = 0
+        while trybcheck == 0:
+              tryb = input("Wybierz tryb gry (1-demo, 2-gra): ")
+              if tryb.isdigit() and (int(tryb) == 1 or int(tryb) == 2):
+                 trybcheck = 1
+                 tryb = int(tryb)
+              else:
+                 print("\nWybierz jedną z dostępnych opcji.")
+        ncheck = 0
+        while ncheck == 0:
+              n = input("Podaj liczbę elementów w alfabecie: ")
+              if n.isdigit():
+                 n = int(n)
+                 ncheck = 1
+              else:
+                 print("\nLiczba elementów w alfabecie musi być liczbą całkowitą i dodatnią.")
+
         self.alphabet = list(map(str, input("Podaj alfabet: ").strip().split()))[:n]
-        self.n = int(input("Podaj maksymalną liczbę ruchów: "))
+
+        ncheck2 = 0
+        while ncheck2 == 0:
+            self.n = input("Podaj maksymalną liczbę ruchów: ")
+            if self.n.isdigit():
+               self.n = int(self.n)
+               ncheck2 = 1
+            else:
+                print("\nMaksymalna liczba ruchów musi być liczbą całkowitą i dodatnią.")
+
         self.strategy = Strategy.Strategy(self.alphabet)
-        self.strategy.strategy_place = int(input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\n3-wybór zawsze tego samego miejsca (drugiego)\n4-\n5-wybieramy losowo spośród miejsc w które można wpisać najmniej liter nie tworząc ciasnego bliźniaka\nWybierz strategię wyboru miejsc: "))
-        self.strategy.strategy_letter = int(input("\n1-losowy wybór liter\n2-wybór liter po kolei\n3-wybór pierwszej z liter bez ułożenia ciasnych bliźniaków\n4-wybór losowej litery bez ułożenia ciasnych bliźniaków\nWybierz strategię wyboru liter: "))
+
+        stratcheck = 0
+        while stratcheck == 0:
+            self.strategy.strategy_place = input("\n1-losowy wybór miejsc\n2-wybór środkowego miejsca\nWybierz strategię wyboru miejsc: ")
+            if self.strategy.strategy_place.isdigit() and int(self.strategy.strategy_place) <= 5:
+                self.strategy.strategy_place = int(self.strategy.strategy_place)
+                stratcheck = 1
+            else:
+                print("\nWybierz jedną z dostępnych opcji.")
+
+        lettercheck = 0
+        while lettercheck == 0:
+            self.strategy.strategy_letter = input("\n1-losowy wybór liter\n2-wybór liter po kolei\nWybierz strategię wyboru liter: ")
+            if self.strategy.strategy_letter.isdigit() and int(self.strategy.strategy_letter) <= 4:
+                self.strategy.strategy_letter = int(self.strategy.strategy_letter)
+                lettercheck = 1
+            else:
+                print("\nWybierz jedną z dostępnych opcji.")
+
         if tryb == 1:
             self.mode = 'demo'
         if tryb == 2:
             self.mode = 'gra'
             self.verbose = False
         if self.mode != 'demo':
-            self.num_of_games = int(input("Wybierz liczbę rozgrywanych gier: "))
+            gamecheck = 0
+            while gamecheck == 0:
+                self.num_of_games = input("Wybierz liczbę rozgrywanych gier: ")
+                if self.num_of_games.isdigit():
+                    self.num_of_games = int(self.num_of_games)
+                    gamecheck = 1
+                else:
+                    print("\nLiczba rozgrywanych gier musi być liczbą całkowitą i dodatnią.")
 
     def game(self):
         twin_list = []
@@ -60,7 +108,7 @@ class CiasneBlizniakiGame:
             if self.verbose:
                 print(twin_list)
                 print("Wybrana litera: ", end='')
-            letter = self.strategy.choose_letter(twin_list, pos) #
+            letter = self.strategy.choose_letter(twin_list) #
             twin_list[pos] = letter
             if self.verbose:
                 print(letter)
@@ -80,11 +128,25 @@ class CiasneBlizniakiGame:
         if ans =='':
             print("\nCzy chcesz zagrać ponownie? (y/n)?")
             ans = input()
+            anscheck1 = 0
+            while anscheck1 == 0:
+                  if ans == 'y' or ans == 'n':
+                     anscheck1 = 1
+                  else:
+                     print("\nWybierz opcję 'y' lub 'n'.")
+                     ans = input()
         if ans == 'n':
             return
-        if ans == 'y' and ans2 != 'n':
+        if ans == 'y':
             print("\nCzy chcesz zmienić parametry gry? (y/n)?")
             ans2 = input()
+            anscheck2 = 0
+            while anscheck2 == 0:
+                if ans2 == 'y' or ans2 == 'n':
+                    anscheck2 = 1
+                else:
+                    print("\nWybierz opcję 'y' lub 'n'.")
+                    ans2 = input()
         if ans2 == 'y':
             self.choose_parameters()
         self.play()
@@ -98,7 +160,6 @@ class CiasneBlizniakiGame:
         :param return_twin:
         :return:
         """
-
         y = copy.deepcopy(x)
         c = list(map(lambda x: x // 2, list(Counter(y).values())))
         list1 = []
@@ -291,4 +352,3 @@ class CiasneBlizniakiGame:
                     return True
             a = a + 2
         return False
-
